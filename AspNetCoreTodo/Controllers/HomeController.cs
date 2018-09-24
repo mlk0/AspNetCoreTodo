@@ -12,18 +12,21 @@ namespace AspNetCoreTodo.Controllers
     {
         public IActionResult Index()
         {
+            //TODO: remove this
             return View();
         }
 
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
+//HACK: asdasd
             return View();
         }
 
         public IActionResult Contact()
         {
+
+            //FIX: asdsad
             ViewData["Message"] = "Your contact page.";
 
             return View();
