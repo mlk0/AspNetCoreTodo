@@ -5,3 +5,7 @@ https://nbarbettini.gitbooks.io/little-asp-net-core-book/
 
 ## Setup
 dotnet new mvc --auth Individual -o AspNetCoreTodo
+
+## Useful VSCode Extensions
+.NET Core Extension Pack
+
