@@ -16,6 +16,8 @@ namespace AspNetCoreTodo.Controllers
             // Put items into a model
 
             // Render view using the model
+
+            return Ok();
         }
 
         
