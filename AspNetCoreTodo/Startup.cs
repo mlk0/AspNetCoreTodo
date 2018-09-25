@@ -28,7 +28,14 @@ namespace AspNetCoreTodo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITodoItemService, FakeTodoItemService>();
+            // services.AddSingleton<ITodoItemService, FakeTodoItemService>();
+
+            //it is important for all the service classes that are working with the database, opening connections
+            //like ApplicationDbContext through the EntityFramework, to be registered 
+            //in the Depenencty Injection system as Scoped services instead of Singletons
+            //which will ensure that an unique service instance will be created per request insted of only once when the app pull starts
+            services.AddScoped<ITodoItemService, TodoItemService>();
+
 
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -41,6 +48,8 @@ namespace AspNetCoreTodo
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+                    
             services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
