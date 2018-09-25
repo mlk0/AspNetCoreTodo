@@ -25,5 +25,14 @@ namespace AspNetCoreTodo.Controllers {
             return View (todoViewModel);
         }
 
+//other option is to not use async controller method but to simply use the original synchronos that is blocking until the Result is not being materialized
+//before resuming to build the todoViewModel
+        public IActionResult IncompleteTodoItems(){
+            var result = this.TodoItemService.GetIncompleteItemsAsync().Result;
+            var todoViewModel = new TodoViewModel { Items = result };
+
+            return View("Index",todoViewModel);   //View(result);
+        }
+
     }
 }
