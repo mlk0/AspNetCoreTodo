@@ -42,5 +42,13 @@ namespace AspNetCoreTodo.Services {
             var result = incompleteItems.ToArrayAsync();
             return result;
         }
+
+        public async Task<bool> MarkTodoDone(string id)
+        {
+            var todoItem = await _applicationDbContext.Items.FirstOrDefaultAsync(c=>c.Id == new Guid(id));
+            todoItem.IsDone = true;
+            var saveCompletedTodoItem = await _applicationDbContext.SaveChangesAsync();
+            return saveCompletedTodoItem == 1;
+        }
     }
 }

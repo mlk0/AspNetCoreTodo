@@ -37,16 +37,31 @@ namespace AspNetCoreTodo.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem (TodoItem todoItem) {
 
-            if(!ModelState.IsValid){
-                return RedirectToAction("Index");
+            if (!ModelState.IsValid) {
+                return RedirectToAction ("Index");
             }
 
-            var addNewItemResult = await this.TodoItemService.AddNewTodoItem(todoItem);
-            if(!addNewItemResult){
-                return BadRequest("unable to add item");
+            var addNewItemResult = await this.TodoItemService.AddNewTodoItem (todoItem);
+            if (!addNewItemResult) {
+                return BadRequest ("unable to add item");
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction ("Index");
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkDone (string id) {
+            if (String.IsNullOrWhiteSpace (id)) {
+                return RedirectToAction ("Index");
+            }
+
+            bool markTodoCompletedSuccessfully = await this.TodoItemService.MarkTodoDone (id);
+            if (!markTodoCompletedSuccessfully) {
+                return BadRequest ("Failed Marking todo item completed");
+
+            }
+
+            return RedirectToAction ("Index");
         }
 
     }
