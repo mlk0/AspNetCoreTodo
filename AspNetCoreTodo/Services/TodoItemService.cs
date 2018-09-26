@@ -15,9 +15,7 @@ namespace AspNetCoreTodo.Services {
 
         public async Task<bool> AddNewTodoItem(TodoItem todoItem)
         {
-             todoItem.Id = Guid.NewGuid();
-             todoItem.DueAt = DateTimeOffset.Now.AddDays(3);
-             
+             todoItem.Id = Guid.NewGuid();             
 
             _applicationDbContext.Items.Add(todoItem);
             var result = await _applicationDbContext.SaveChangesAsync();

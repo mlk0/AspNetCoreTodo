@@ -1,17 +1,40 @@
 @model TodoItem
 
 <form asp-action="AddItem" method="POST">
-    <div>
+    <div class="form-group">
 
-    <label asp-for="Title">Add new Item: </label>
+    <!-- <label asp-for="Title" class="control-label"> Add new Item: </label>
+    <input asp-for="Title" class="form-control">
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsDone" class="control-label">Is Done:</label>
+        <input type="checkbox" asp-for="IsDone" class="form-control">
+    </div>
+
+    <div class="form-group">
+                <label asp-for="DueAt" class="control-label">Due At:</label>
+                <input asp-for="DueAt" class="form-control" />
+                <span asp-validation-for="DueAt" class="text-danger"></span>
+    </div> -->
+    
+
+<label asp-for="Title"> Add new Item: </label>
     <input asp-for="Title">
 
     </div>
 
-    <div>
+    <div class="form-group">
         <label asp-for="IsDone">Is Done:</label>
         <input type="checkbox" asp-for="IsDone">
     </div>
-    
+
+    <div class="form-group">
+                <label asp-for="DueAt" >Due At:</label>
+                <input asp-for="DueAt" />
+                <span asp-validation-for="DueAt" class="text-danger"></span>
+    </div>
+
     <button type="submit">Save</button>
 </form>

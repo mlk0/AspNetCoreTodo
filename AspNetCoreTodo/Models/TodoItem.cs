@@ -1,10 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace AspNetCoreTodo.Models
-{
-    public class TodoItem
-    {
+namespace AspNetCoreTodo.Models {
+    public class TodoItem {
         public Guid Id { get; set; }
 
         public bool IsDone { get; set; }
@@ -12,6 +10,8 @@ namespace AspNetCoreTodo.Models
         [Required]
         public string Title { get; set; }
 
+        [DataType (DataType.Date)]
+        [DisplayFormat (DataFormatString = "{yyyy-MM-dd}")]
         public DateTimeOffset? DueAt { get; set; }
     }
 }
