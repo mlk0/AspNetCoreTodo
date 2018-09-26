@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AspNetCoreTodo.Data;
 using AspNetCoreTodo.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace AspNetCoreTodo.Services {
     public class TodoItemService : ITodoItemService {
@@ -12,10 +13,21 @@ namespace AspNetCoreTodo.Services {
             _applicationDbContext = applicationDbContext;
         }
 
+        public async Task<bool> AddNewTodoItem(TodoItem todoItem)
+        {
+             todoItem.Id = Guid.NewGuid();
+             todoItem.DueAt = DateTimeOffset.Now.AddDays(3);
+             
+
+            _applicationDbContext.Items.Add(todoItem);
+            var result = await _applicationDbContext.SaveChangesAsync();
+            return result == 1;
+        }
+
         public Task<TodoItem[]> GetIncompleteItemsAsync () {
 
             //the original response is IQueriable<T> and one option of going in async mode would be just to evaluate it and return an array
-            var incompleteItems =_applicationDbContext.Items.Where(i=>i.IsDone!=false);
+            var incompleteItems =_applicationDbContext.Items.Where(i=>i.IsDone==false);
 
             //however, even better option would be to respond with an awaitable result
             //each of the array, list, enumerable and dictionary have an async corresponding version

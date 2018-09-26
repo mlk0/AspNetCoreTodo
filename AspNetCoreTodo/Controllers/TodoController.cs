@@ -25,13 +25,28 @@ namespace AspNetCoreTodo.Controllers {
             return View (todoViewModel);
         }
 
-//other option is to not use async controller method but to simply use the original synchronos that is blocking until the Result is not being materialized
-//before resuming to build the todoViewModel
-        public IActionResult IncompleteTodoItems(){
-            var result = this.TodoItemService.GetIncompleteItemsAsync().Result;
+        //other option is to not use async controller method but to simply use the original synchronos that is blocking until the Result is not being materialized
+        //before resuming to build the todoViewModel
+        public IActionResult IncompleteTodoItems () {
+            var result = this.TodoItemService.GetIncompleteItemsAsync ().Result;
             var todoViewModel = new TodoViewModel { Items = result };
 
-            return View("Index",todoViewModel);   //View(result);
+            return View ("Index", todoViewModel); //View(result);
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddItem (TodoItem todoItem) {
+
+            if(!ModelState.IsValid){
+                return RedirectToAction("Index");
+            }
+
+            var addNewItemResult = await this.TodoItemService.AddNewTodoItem(todoItem);
+            if(!addNewItemResult){
+                return BadRequest("unable to add item");
+            }
+
+            return RedirectToAction("Index");
         }
 
     }

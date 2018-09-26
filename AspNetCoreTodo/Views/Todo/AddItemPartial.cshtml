@@ -1,0 +1,17 @@
+@model TodoItem
+
+<form asp-action="AddItem" method="POST">
+    <div>
+
+    <label asp-for="Title">Add new Item: </label>
+    <input asp-for="Title">
+
+    </div>
+
+    <div>
+        <label asp-for="IsDone">Is Done:</label>
+        <input type="checkbox" asp-for="IsDone">
+    </div>
+    
+    <button type="submit">Save</button>
+</form>
