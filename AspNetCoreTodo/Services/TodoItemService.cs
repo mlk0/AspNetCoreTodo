@@ -4,6 +4,7 @@ using AspNetCoreTodo.Data;
 using AspNetCoreTodo.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCoreTodo.Services {
     public class TodoItemService : ITodoItemService {
@@ -20,6 +21,16 @@ namespace AspNetCoreTodo.Services {
             _applicationDbContext.Items.Add(todoItem);
             var result = await _applicationDbContext.SaveChangesAsync();
             return result == 1;
+        }
+
+        public async Task<bool> AddNewTodoItemForUser(TodoItem todoItem, IdentityUser currentUser)
+        {
+            todoItem.Id = Guid.NewGuid();
+            todoItem.UserId = currentUser.Id;
+
+            this._applicationDbContext.Items.Add(todoItem);
+            var rowsAffected = await this._applicationDbContext.SaveChangesAsync();
+            return rowsAffected == 1;
         }
 
         public Task<TodoItem[]> GetIncompleteItemsAsync () {
@@ -41,6 +52,12 @@ namespace AspNetCoreTodo.Services {
 
             var result = incompleteItems.ToArrayAsync();
             return result;
+        }
+
+        public Task<TodoItem[]> GetIncompleteItemsForUserAsync(IdentityUser currentUser)
+        {
+            var incompleteTodItemsForUser = this._applicationDbContext.Items.Where(c=>c.IsDone==false && currentUser.Id == c.UserId);
+            return incompleteTodItemsForUser.ToArrayAsync();
         }
 
         public async Task<bool> MarkTodoDone(string id)

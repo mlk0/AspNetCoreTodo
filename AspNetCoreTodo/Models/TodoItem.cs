@@ -13,5 +13,6 @@ namespace AspNetCoreTodo.Models {
         [DataType (DataType.Date)]
         [DisplayFormat (DataFormatString = "{yyyy-MM-dd}")]
         public DateTimeOffset? DueAt { get; set; }
+        public string UserId { get; internal set; }
     }
 }

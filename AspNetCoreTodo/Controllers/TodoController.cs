@@ -41,8 +41,10 @@ namespace AspNetCoreTodo.Controllers {
             _logger.LogDebug ($"currentUser : {JsonConvert.SerializeObject(currentUser, Newtonsoft.Json.Formatting.Indented)}");
 
             // Get to-do items from database
-            var incomleteTodoItems = await this.TodoItemService.GetIncompleteItemsAsync ();
-            var todoViewModel = new TodoViewModel { Items = incomleteTodoItems };
+            //  var incompleteTodoItems = await this.TodoItemService.GetIncompleteItemsAsync();
+            TodoItem[] incompleteTodoItems = await this.TodoItemService.GetIncompleteItemsForUserAsync(currentUser);
+            
+            var todoViewModel = new TodoViewModel { Items = incompleteTodoItems };
 
             return View (todoViewModel);
         }
@@ -63,7 +65,13 @@ namespace AspNetCoreTodo.Controllers {
                 return RedirectToAction ("Index");
             }
 
-            var addNewItemResult = await this.TodoItemService.AddNewTodoItem (todoItem);
+            var currentUser = await this._userManager.GetUserAsync(User);
+            if(currentUser == null) return Challenge();
+
+
+            // var addNewItemResult = await this.TodoItemService.AddNewTodoItem (todoItem);
+            bool addNewItemResult = await this.TodoItemService.AddNewTodoItemForUser (todoItem, currentUser);
+
             if (!addNewItemResult) {
                 return BadRequest ("unable to add item");
             }
