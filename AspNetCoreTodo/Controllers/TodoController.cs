@@ -85,7 +85,12 @@ namespace AspNetCoreTodo.Controllers {
                 return RedirectToAction ("Index");
             }
 
-            bool markTodoCompletedSuccessfully = await this.TodoItemService.MarkTodoDone (id);
+            var currentUser = await this._userManager.GetUserAsync(User);
+            if(currentUser == null) return Challenge();
+
+            // bool markTodoCompletedSuccessfully = await this.TodoItemService.MarkTodoDone (id);
+            bool markTodoCompletedSuccessfully = await this.TodoItemService.MarkTodoDoneByUser(id, currentUser);
+
             if (!markTodoCompletedSuccessfully) {
                 return BadRequest ("Failed Marking todo item completed");
 

@@ -67,5 +67,18 @@ namespace AspNetCoreTodo.Services {
             var saveCompletedTodoItem = await _applicationDbContext.SaveChangesAsync();
             return saveCompletedTodoItem == 1;
         }
+
+        public async Task<bool> MarkTodoDoneByUser(string id, IdentityUser currentUser )
+        {
+            bool result =false;
+            var todoItemForUser = await this._applicationDbContext.Items.FirstOrDefaultAsync(c=>c.UserId == currentUser.Id);
+            if(todoItemForUser != null){
+                todoItemForUser.IsDone = true;
+                var numberOfRowsAffected = await _applicationDbContext.SaveChangesAsync();
+                result = numberOfRowsAffected == 1;
+            } 
+
+            return result; 
+        }
     }
 }
