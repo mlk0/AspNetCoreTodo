@@ -4,20 +4,42 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreTodo.Models;
 using AspNetCoreTodo.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace AspNetCoreTodo.Controllers {
+    [Authorize]
     public class TodoController : Controller {
-        public TodoController (ITodoItemService todoItemService) {
+        private readonly UserManager<IdentityUser> _userManager;
+        public ILogger<TodoController> _logger { get; }
+
+        public TodoController (ITodoItemService todoItemService, UserManager<IdentityUser> userManager, ILogger<TodoController> logger) {
+            this._logger = logger;
             TodoItemService = todoItemService;
+            this._userManager = userManager;
+
         }
 
         public ITodoItemService TodoItemService { get; }
 
         public async Task<IActionResult> Index () {
-            // TODO: Your code here
 
-            // return Ok();
+            //TODO: even when the user is not logged in the User object will always be not null
+            if (User == null) {
+                _logger.LogWarning ($"User is null");
+            }
+
+            var currentUser = await _userManager.GetUserAsync (User);
+            if (currentUser == null) {
+                _logger.LogError ($"currentUser is null");
+                return Challenge ();
+            }
+
+            _logger.LogDebug ($"currentUser : {JsonConvert.SerializeObject(currentUser, Newtonsoft.Json.Formatting.Indented)}");
+
             // Get to-do items from database
             var incomleteTodoItems = await this.TodoItemService.GetIncompleteItemsAsync ();
             var todoViewModel = new TodoViewModel { Items = incomleteTodoItems };
