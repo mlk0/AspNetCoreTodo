@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreTodo.Data;
 using AspNetCoreTodo.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Proxies;
 using Microsoft.Extensions.Configuration;
@@ -47,28 +49,35 @@ namespace AspNetCoreTodo {
             //     .AddEntityFrameworkStores<ApplicationDbContext> ()
             //     .AddDefaultTokenProviders ();
 
+            // services.AddDefaultIdentity<IdentityUser>()
+            //     .AddRoles<IdentityRole>()
+            //     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// services.AddDefaultIdentity<IdentityUser>()
-//     .AddRoles<IdentityRole>()
-//     .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole> ()
+                .AddEntityFrameworkStores<ApplicationDbContext> ()
+                //TODO: UPDATE IN 2.2
+                //AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>() SIMPLY DOES NOT WORK FOR 2.1
+                //BUT IS FALLING BACK TO 1.1 TEMPLATE 
+                //    services.AddIdentity<IdentityUser, IdentityRole>() ..AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+                //WITHOUT SPECIFYING THAT THE DEFAULT UI NEEDS TO BE USED THE APP SIMPLY FAILS TO WORK, LIKE THERE IS NO LOGIN PAGE
+                .AddDefaultUI ()
+                .AddDefaultTokenProviders ();
 
-services.AddIdentity<IdentityUser, IdentityRole>()
-              .AddEntityFrameworkStores<ApplicationDbContext>()
-              //TODO: UPDATE IN 2.2
-              //AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>() SIMPLY DOES NOT WORK FOR 2.1
-              //BUT IS FALLING BACK TO 1.1 TEMPLATE 
-              //    services.AddIdentity<IdentityUser, IdentityRole>() ..AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-              //WITHOUT SPECIFYING THAT THE DEFAULT UI NEEDS TO BE USED THE APP SIMPLY FAILS TO WORK, LIKE THERE IS NO LOGIN PAGE
-              .AddDefaultUI() 
-              .AddDefaultTokenProviders();
-
-              
             // services.AddIdentity<IdentityUser, IdentityRole> ()
             //     .AddEntityFrameworkStores<ApplicationDbContext> ()
             //     .AddDefaultTokenProviders ();
 
-            services.AddMvc().SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
- 
+            services.AddMvc (config => {
+                    // using Microsoft.AspNetCore.Mvc.Authorization;
+                    // using Microsoft.AspNetCore.Authorization;
+                    var policy = new AuthorizationPolicyBuilder ()
+                        .RequireAuthenticatedUser ()
+                        .Build ();
+
+                    config.Filters.Add (new AuthorizeFilter (policy));
+                }
+
+            ).SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
 
         }
 
@@ -87,7 +96,6 @@ services.AddIdentity<IdentityUser, IdentityRole>()
             app.UseCookiePolicy ();
 
             app.UseAuthentication ();
-            
 
             app.UseMvc (routes => {
                 routes.MapRoute (
