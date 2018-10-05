@@ -13,6 +13,7 @@
         <tr>
             <td>Id</td>
             <td>Email</td>
+            <td>...</td>
         </tr>
     </thead>
 
@@ -21,6 +22,7 @@
         <tr>
             <td>@user.Id</td>
             <td>@user.Email</td>
+            <td><a asp-controller="ManageUsers" asp-action="DeleteUser" asp-route-userId=@user.Id>Delete @user.Email</a> </td>
         </tr>
     }
 </table>
@@ -32,6 +34,7 @@
         <tr>
             <td>Id</td>
             <td>Email</td>
+            <td>...</td>
         </tr>
     </thead>
 
@@ -40,6 +43,8 @@
         <tr>
             <td>@user.Id</td>
             <td>@user.Email</td>
+            <td><a asp-controller="ManageUsers" asp-action="DeleteUser" asp-route-userId=@user.Id>Delete @user.Email</a> </td>
+
         </tr>
     }
 </table>
