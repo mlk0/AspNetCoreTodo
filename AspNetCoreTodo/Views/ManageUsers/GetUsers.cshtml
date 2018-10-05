@@ -1,0 +1,51 @@
+@model ManageUsersViewModel
+@using Newtonsoft.Json 
+
+@{
+    ViewData["Title"] = "Manage users";
+}
+
+
+<h3>Administrators</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Email</td>
+        </tr>
+    </thead>
+
+    @foreach (var user in Model.Administrators)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+        </tr>
+    }
+</table>
+
+<h3>Everyone</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Email</td>
+        </tr>
+    </thead>
+
+    @foreach (var user in Model.AllUsers)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+        </tr>
+    }
+</table>
+
+<pre>
+    DEUBUG:
+    @Html.Raw(Json.Serialize(Model))
+    @Html.Raw(JsonConvert.SerializeObject(Model, Newtonsoft.Json.Formatting.Indented))
+</pre>
